@@ -6,6 +6,7 @@ from discord.ext import commands
 _DESCRIPTION = '''quack'''
 
 bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
+rand = random.SystemRandom()
 
 @bot.event
 async def on_ready():
@@ -24,6 +25,8 @@ async def on_ready():
 
 @bot.command()
 async def roll():
-	await bot.say('pretending to roll')
+	lower_bound = 1
+	upper_boundb = 6
+	await bot.say('🎲 (%d-%d): %d' % (lower_bound, upper_bound, rand.randint(lower_bound, upper_bound)))
 
 bot.run(duckbot_settings.TOKEN)
