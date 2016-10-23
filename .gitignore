@@ -1,0 +1,4 @@
+duckbot_settings.py
+
+env/
+__pycache__/
