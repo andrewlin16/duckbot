@@ -36,6 +36,7 @@ async def roll(ctx, bound1=None, bound2=None):
 
     display_name = ctx.message.author.nick or ctx.message.author.name
 
+    await bot.delete_message(ctx.message)
     await bot.say(format_string % (display_name, lower_bound, upper_bound,
                                    rand.randint(lower_bound, upper_bound)))
 
