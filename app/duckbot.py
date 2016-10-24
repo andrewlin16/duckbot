@@ -2,11 +2,11 @@ import discord
 import duckbot_settings
 import random
 import re
+import shlex
 
 client = discord.Client()
 rand = random.SystemRandom()
 
-arg_split_regex = re.compile('\s+')
 range_regex = re.compile('\d+-\d+')
 
 
@@ -53,7 +53,7 @@ async def on_message(message):
         return
 
     if message.content.startswith('/'):
-        split = arg_split_regex.split(message.content)
+        split = shlex.split(message.content)
 
         cmd = split[0][1:]
         args = split[1:]
