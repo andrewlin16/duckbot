@@ -25,6 +25,10 @@ To run:
 1.  `source env/bin/activate`
 2.  `python3 app/duckbot.py`
 
+Or run the start script:
+
+1.  `./start.sh`
+
     The bot will print out an OAuth URL that can be used to add the bot to your
     server.
 
