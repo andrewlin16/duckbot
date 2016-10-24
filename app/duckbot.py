@@ -1,5 +1,6 @@
 import discord
 import duckbot_settings
+import os
 import random
 import re
 import shlex
@@ -36,8 +37,20 @@ def roll(message, *args):
     return format_string % (display_name, lower_bound, upper_bound,
                             rand.randint(lower_bound, upper_bound))
 
+
+def dbg(message, *args):
+    if 'ALLOW_EVAL' in os.environ and os.environ['ALLOW_EVAL']:
+        try:
+            return '`%s`' % eval(args[0])
+        except Exception as e:
+            return '%s: `%s`' % (type(e), e)
+    else:
+        return 'Sorry, no eval!'
+
+
 COMMANDS = {
     'roll': roll,
+    'eval': dbg,
 }
 
 
