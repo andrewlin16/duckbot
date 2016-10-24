@@ -1,32 +1,60 @@
 import discord
 import duckbot_settings
 import random
-from discord.ext import commands
+import re
 
-_DESCRIPTION = '''quack'''
-
-bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
+client = discord.Client()
 rand = random.SystemRandom()
 
-@bot.event
+arg_split_regex = re.compile('\s+')
+range_regex = re.compile('\d+-\d+')
+
+def roll(message, *args):
+	lower_bound = 1
+	upper_bound = 100
+
+	if len(args) >= 2:
+		lower_bound = int(args[0])
+		upper_bound = int(args[1])
+	elif len(args) == 1:
+		if (range_regex.match(args[0])):
+			range_split = args[0].split('-')
+			lower_bound = int(range_split[0])
+			upper_bound = int(range_split[1])
+		else:
+			upper_bound = int(args[0])
+
+	lower_bound = max(lower_bound, 1)
+	upper_bound = max(lower_bound, upper_bound)
+
+	format_string = '**%%s** rolls (%%d-%%d): **%%0%dd**' % len(str(upper_bound))
+	return format_string % (message.author, lower_bound, upper_bound, rand.randint(lower_bound, upper_bound))
+
+COMMANDS = {
+	'roll': roll,
+}
+
+@client.event
 async def on_ready():
-	print('logged in: %s (%s)' % (bot.user.name, bot.user.id))
+	print('logged in: %s (%s)' % (client.user.name, client.user.id))
 	
 	oauth_url = discord.utils.oauth_url(duckbot_settings.CLIENT_ID, permissions=discord.Permissions.text())
 	print('invite me: %s' % oauth_url)
 
-	print('Channels:')
+@client.event
+async def on_message(message):
+	if message.author == client.user:
+		return
 
-	channels = bot.get_all_channels()
-	for channel in channels:
-		print('%s (%s)' % (channel.name, channel.id))
-		if channel.name == 'botspam':
-			await bot.send_message(channel, 'quack!! (ready to roll)')
+	if message.content.startswith('/'):
+		split = arg_split_regex.split(message.content)
 
-@bot.command()
-async def roll():
-	lower_bound = 1
-	upper_bound = 6
-	await bot.say('🎲 (%d-%d): %d' % (lower_bound, upper_bound, rand.randint(lower_bound, upper_bound)))
+		cmd = split[0][1:]
+		args = split[1:]
 
-bot.run(duckbot_settings.TOKEN)
+		if cmd in COMMANDS:
+			reply = COMMANDS[cmd](message, *args)
+			if reply is not None:
+				await client.send_message(message.channel, reply)
+
+client.run(duckbot_settings.TOKEN)
