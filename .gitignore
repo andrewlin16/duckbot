@@ -2,3 +2,7 @@ duckbot_settings.py
 
 env/
 __pycache__/
+
+.vimrc
+*.swp
+*.swo
