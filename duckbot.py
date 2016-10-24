@@ -26,7 +26,7 @@ async def on_ready():
 @bot.command()
 async def roll():
 	lower_bound = 1
-	upper_boundb = 6
+	upper_bound = 6
 	await bot.say('🎲 (%d-%d): %d' % (lower_bound, upper_bound, rand.randint(lower_bound, upper_bound)))
 
 bot.run(duckbot_settings.TOKEN)
