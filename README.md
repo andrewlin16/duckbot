@@ -10,7 +10,7 @@ To set up:
 
 1.  `python3 -m venv env` in directory.
 2.  `python3 -m pip install discord.py`
-3.  Create a `duckbot_settings.py` file with the following contents:
+3.  Create a `app/duckbot_settings.py` file with the following contents:
 
     ```
     CLIENT_ID = '<your Discord app Client ID>'
@@ -23,7 +23,7 @@ To set up:
 To run:
 
 1.  `source env/bin/activate`
-2.  `python3 duckbot.py`
+2.  `python3 app/duckbot.py`
 
     The bot will print out an OAuth URL that can be used to add the bot to your
     server.
