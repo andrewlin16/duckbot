@@ -1,6 +1,5 @@
 import discord
 import duckbot_settings
-import os
 import random
 import re
 from discord.ext import commands
@@ -39,17 +38,6 @@ async def roll(ctx, bound1=None, bound2=None):
 
     await bot.say(format_string % (display_name, lower_bound, upper_bound,
                                    rand.randint(lower_bound, upper_bound)))
-
-
-@bot.command()
-async def dbg(expr):
-    if 'ALLOW_EVAL' in os.environ and os.environ['ALLOW_EVAL']:
-        try:
-            await bot.say('`%s`' % eval(expr))
-        except Exception as e:
-            await bot.say('%s: `%s`' % (type(e), e))
-    else:
-        await bot.say('Sorry, no eval!')
 
 
 @bot.event
