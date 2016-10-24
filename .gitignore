@@ -6,3 +6,4 @@ __pycache__/
 .vimrc
 *.swp
 *.swo
+.idea/
