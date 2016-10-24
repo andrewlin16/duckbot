@@ -28,9 +28,12 @@ def roll(message, *args):
     lower_bound = max(lower_bound, 1)
     upper_bound = max(lower_bound, upper_bound)
 
-    format_string = ('**%%s** rolls (%%d-%%d): **%%0%dd**' %
-                     len(str(upper_bound)))
-    return format_string % (message.author, lower_bound, upper_bound,
+    num_digits = len(str(upper_bound))
+    format_string = '**%s** rolls (%d-%d): **%0' + str(num_digits) + 'd**'
+
+    display_name = message.author.nick or message.author.name
+
+    return format_string % (display_name, lower_bound, upper_bound,
                             rand.randint(lower_bound, upper_bound))
 
 COMMANDS = {
