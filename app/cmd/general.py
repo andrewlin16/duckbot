@@ -2,7 +2,7 @@ import re
 
 from discord.ext.commands import Bot
 
-from common import rand
+from common import rand, display_name
 
 
 def register(bot: Bot):
@@ -36,8 +36,7 @@ def register(bot: Bot):
         num_digits = len(str(upper_bound))
         format_string = '**%s** rolls (%d-%d): **%0' + str(num_digits) + 'd**'
 
-        display_name = ctx.message.author.nick or ctx.message.author.name
-
         await bot.delete_message(ctx.message)
-        await bot.say(format_string % (display_name, lower_bound, upper_bound,
-                                       rand.randint(lower_bound, upper_bound)))
+        await bot.say(
+            format_string % (display_name(ctx), lower_bound, upper_bound,
+                             rand.randint(lower_bound, upper_bound)))

@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 import config
-from cmd import general
+from cmd import general, emotes
 
 
 def parse_arguments():
@@ -28,6 +28,7 @@ bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
 
 # Register commands to bot
 general.register(bot)
+emotes.register(bot)
 
 
 @bot.event
