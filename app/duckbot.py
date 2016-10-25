@@ -13,20 +13,27 @@ range_regex = re.compile('\d+-\d+')
 
 
 @bot.command(pass_context=True)
-async def roll(ctx, bound1=None, bound2=None):
+async def roll(ctx, x=None, y=None):
+    """Rolls a random number.
+
+    Options:
+    • "/roll": Rolls 1-100.
+    • "/roll [x]": Rolls 1-x.
+    • "/roll [x] [y]" or "/roll [x]-[y]": Rolls x-y.
+    """
     lower_bound = 1
     upper_bound = 100
 
-    if bound2 is not None:
-        lower_bound = int(bound1)
-        upper_bound = int(bound2)
-    elif bound1 is not None:
-        if (range_regex.match(bound1)):
-            range_split = bound1.split('-')
+    if y is not None:
+        lower_bound = int(x)
+        upper_bound = int(y)
+    elif x is not None:
+        if range_regex.match(x):
+            range_split = x.split('-')
             lower_bound = int(range_split[0])
             upper_bound = int(range_split[1])
         else:
-            upper_bound = int(bound1)
+            upper_bound = int(x)
 
     lower_bound = max(lower_bound, 1)
     upper_bound = max(lower_bound, upper_bound)
