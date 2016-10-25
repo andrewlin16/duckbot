@@ -4,6 +4,8 @@ from discord.ext.commands import Bot
 
 from common import rand, display_name
 
+RANGE_REGEX = re.compile('\d+-\d+')
+
 
 def register(bot: Bot):
     @bot.command(pass_context=True)
@@ -22,8 +24,7 @@ def register(bot: Bot):
             lower_bound = int(x)
             upper_bound = int(y)
         elif x is not None:
-            range_regex = re.compile('\d+-\d+')
-            if range_regex.match(x):
+            if RANGE_REGEX.match(x):
                 range_split = x.split('-')
                 lower_bound = int(range_split[0])
                 upper_bound = int(range_split[1])
