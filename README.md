@@ -1,7 +1,7 @@
 duckbot
 =======
 
-This is a (currently) babby Discord bot written in Python 3.
+This is a (currently) babby Discord bot written in Python 3.5
 
 Usage
 -----
@@ -10,24 +10,16 @@ To set up:
 
 1.  `python3 -m venv env` in directory.
 2.  `python3 -m pip install discord.py`
-3.  Create a `app/config.py` file with the following contents:
-
-    ```
-    CLIENT_ID = '<your Discord app Client ID>'
-    TOKEN = '<yout Discord app Token>'
-    ```
+3.  Create a `app/config.py` file with the same format as `config.example.py`
 
     You can find or create your list of applications
     [here](https://discordapp.com/developers/applications/me).
 
 To run:
 
-1.  `source env/bin/activate`
-2.  `python3 app/duckbot.py`
-
-Or run the start script:
-
-1.  `./start.sh`
+1.  Use the start script `./start.sh -b [name]`
+     
+    Make sure the `name` is the name of a bot in `config.py`
 
     The bot will print out an OAuth URL that can be used to add the bot to your
     server.
