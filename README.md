@@ -10,7 +10,7 @@ To set up:
 
 1.  `python3 -m venv env` in directory.
 2.  `python3 -m pip install discord.py`
-3.  Create a `app/duckbot_settings.py` file with the following contents:
+3.  Create a `app/config.py` file with the following contents:
 
     ```
     CLIENT_ID = '<your Discord app Client ID>'

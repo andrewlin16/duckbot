@@ -1,5 +1,5 @@
 import discord
-import duckbot_settings
+import config
 import random
 import re
 from discord.ext import commands
@@ -53,7 +53,7 @@ async def on_ready():
     print('logged in: %s (%s)' % (bot.user.name, bot.user.id))
 
     oauth_url = discord.utils.oauth_url(
-        duckbot_settings.CLIENT_ID, permissions=discord.Permissions.text())
+        config.CLIENT_ID, permissions=discord.Permissions.text())
     print('invite me: %s' % oauth_url)
 
-bot.run(duckbot_settings.TOKEN)
+bot.run(config.TOKEN)
