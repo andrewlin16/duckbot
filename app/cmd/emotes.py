@@ -7,18 +7,18 @@ DONGER = 'ヽ༼ຈل͜ຈ༽ﾉ'
 
 
 def register(bot: Bot):
-    @bot.command(pass_context=True, help=LENNY)
-    async def lenny(ctx, x=None, y=None):
+    @bot.command(help=LENNY)
+    async def lenny():
         await bot.say(LENNY)
 
-    @bot.command(pass_context=True, help=GIFF)
-    async def giff(ctx, x=None, y=None):
+    @bot.command(help=GIFF)
+    async def giff():
         await bot.say(GIFF)
 
-    @bot.command(pass_context=True, help=DISAPPROVAL)
-    async def disapproval(ctx, x=None, y=None):
+    @bot.command(help=DISAPPROVAL)
+    async def disapproval():
         await bot.say(DISAPPROVAL)
 
-    @bot.command(pass_context=True, help=DONGER)
-    async def donger(ctx, x=None, y=None):
+    @bot.command(help=DONGER)
+    async def donger():
         await bot.say(DONGER)
