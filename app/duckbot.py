@@ -7,6 +7,9 @@ import config
 from cmd import general, emotes
 
 
+_DESCRIPTION = '''quack'''
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="quack")
     parser.add_argument('-b', '--botname',
@@ -22,7 +25,6 @@ bot_info = config.bots[args.botname]
 CLIENT_ID = bot_info['client_id']
 TOKEN = bot_info['token']
 
-_DESCRIPTION = '''quack'''
 
 bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
 
