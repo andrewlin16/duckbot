@@ -1,10 +1,9 @@
 import random
-import string
 
 from discord.ext.commands import Context
 
 rand = random.SystemRandom()
 
 
-def display_name(ctx: Context) -> string:
+def display_name(ctx: Context) -> str:
     return ctx.message.author.nick or ctx.message.author.name
