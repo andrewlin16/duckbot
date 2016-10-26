@@ -3,7 +3,7 @@ import re
 from discord.ext.commands import Bot
 from discord.ext.commands import Context
 
-from common import rand, display_name, is_direct_message
+from common import rand, is_direct_message
 
 RANGE_REGEX = re.compile('\d+-\d+')
 
@@ -45,6 +45,6 @@ def register(bot: Bot):
             reply_start = 'You rolled'
         else:
             await bot.delete_message(ctx.message)
-            reply_start = '**%s** rolls' % display_name(ctx)
+            reply_start = '**%s** rolls' % ctx.message.author.display_name
 
         await bot.say('%s %s' % (reply_start, reply_end))
