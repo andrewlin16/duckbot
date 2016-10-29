@@ -7,14 +7,15 @@ import config
 from cmd import general, emotes
 
 
+_DEFAULT_BOT_NAME = 'duckbot'
 _DESCRIPTION = '''quack'''
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="quack")
     parser.add_argument('-b', '--botname',
-                        required=True,
                         choices=config.bots.keys(),
+                        default=_DEFAULT_BOT_NAME,
                         help="Name of bot in config file")
     return parser.parse_args()
 
@@ -22,7 +23,14 @@ def parse_arguments():
 def main():
     args = parse_arguments()
 
-    bot_info = config.bots[args.botname]
+    botname = args.botname
+    if botname not in config.bots:
+        if len(config.bots) == 1:
+            botname = next(iter(config.bots.keys()))
+        else:
+            raise Exception('Bot config for "%s" not found.' % botname)
+
+    bot_info = config.bots[botname]
     client_id = bot_info['client_id']
     token = bot_info['token']
 
