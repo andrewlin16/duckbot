@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.ext.commands import Bot
 from discord.ext.commands import Context
 
-from common import rand, is_direct_message
+from common import rand, is_direct_message, get_invite_url
 
 RANGE_REGEX = re.compile('\d+-\d+')
 
@@ -52,6 +52,10 @@ class General:
             reply_start = '**%s** rolls' % ctx.message.author.display_name
 
         await self.bot.say('%s %s' % (reply_start, reply_end))
+
+    @commands.command()
+    async def invite(self):
+        await self.bot.say(get_invite_url(self.bot))
 
 
 def setup(bot: Bot):

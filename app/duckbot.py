@@ -1,11 +1,10 @@
 import argparse
 import logging
 
-import discord
 from discord.ext import commands
 
 import config
-from cogs import general, emotes
+from common import get_invite_url
 
 _DEFAULT_BOT_NAME = 'duckbot'
 _DESCRIPTION = '''quack'''
@@ -47,6 +46,8 @@ def main():
 
     args = parse_arguments()
 
+    bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
+
     botname = args.botname
     if botname not in config.bots:
         if len(config.bots) == 1:
@@ -55,10 +56,8 @@ def main():
             raise Exception('Bot config for "%s" not found.' % botname)
 
     bot_info = config.bots[botname]
-    client_id = bot_info['client_id']
+    bot.client_id = bot_info['client_id']
     token = bot_info['token']
-
-    bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
 
     # Register commands to bot
     bot.load_extension('cogs.general')
@@ -69,10 +68,7 @@ def main():
         logger.info('Ready')
         print('--------------------')
         print('logged in: %s (%s)' % (bot.user.name, bot.user.id))
-
-        oauth_url = discord.utils.oauth_url(
-            client_id, permissions=discord.Permissions.text())
-        print('invite me: %s' % oauth_url)
+        print('invite me: %s' % get_invite_url(bot))
         print('--------------------')
 
     bot.run(token)
