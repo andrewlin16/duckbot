@@ -1,5 +1,6 @@
 import re
 
+from discord.ext import commands
 from discord.ext.commands import Bot
 from discord.ext.commands import Context
 
@@ -8,9 +9,12 @@ from common import rand, is_direct_message
 RANGE_REGEX = re.compile('\d+-\d+')
 
 
-def register(bot: Bot):
-    @bot.command(pass_context=True)
-    async def roll(ctx: Context, x=None, y=None):
+class General:
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(pass_context=True)
+    async def roll(self, ctx: Context, x=None, y=None):
         """Rolls a random number.
 
         Options:
@@ -44,7 +48,11 @@ def register(bot: Bot):
         if is_direct_message(ctx):
             reply_start = 'You rolled'
         else:
-            await bot.delete_message(ctx.message)
+            await self.bot.delete_message(ctx.message)
             reply_start = '**%s** rolls' % ctx.message.author.display_name
 
-        await bot.say('%s %s' % (reply_start, reply_end))
+        await self.bot.say('%s %s' % (reply_start, reply_end))
+
+
+def setup(bot: Bot):
+    bot.add_cog(General(bot))

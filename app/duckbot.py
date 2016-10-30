@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 
 import config
-from cmd import general, emotes
+from cogs import general, emotes
 
 _DEFAULT_BOT_NAME = 'duckbot'
 _DESCRIPTION = '''quack'''
@@ -61,8 +61,8 @@ def main():
     bot = commands.Bot(command_prefix='/', description=_DESCRIPTION)
 
     # Register commands to bot
-    general.register(bot)
-    emotes.register(bot)
+    bot.load_extension('cogs.general')
+    bot.load_extension('cogs.emotes')
 
     @bot.event
     async def on_ready():
