@@ -6,3 +6,5 @@ bots = {
     }
     # Additional bots go here
 }
+
+owner_id = '__ID_OF_BOT_OWNER__'

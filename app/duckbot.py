@@ -62,6 +62,7 @@ def main():
     # Register commands to bot
     bot.load_extension('cogs.general')
     bot.load_extension('cogs.emotes')
+    bot.load_extension('cogs.admin')
 
     @bot.event
     async def on_ready():
