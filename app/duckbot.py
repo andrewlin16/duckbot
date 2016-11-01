@@ -13,6 +13,7 @@ default_cogs = [
     'admin',
     'emotes',
     'general',
+    'owner',
 ]
 
 
