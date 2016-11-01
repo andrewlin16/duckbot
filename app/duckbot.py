@@ -9,12 +9,18 @@ from common import get_invite_url
 _DEFAULT_BOT_NAME = 'duckbot'
 _DESCRIPTION = '''quack'''
 
+default_cogs = [
+    'admin',
+    'emotes',
+    'general',
+]
+
 
 def setup_logging() -> logging.Logger:
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
-        '%(asctime)s %(levelname)s [%(name)s]: %(message)s)')
+        '%(asctime)s %(levelname)s [%(name)s]: %(message)s')
 
     # Log WARNING to 'discord.log'
     file_handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
@@ -60,9 +66,9 @@ def main():
     token = bot_info['token']
 
     # Register commands to bot
-    bot.load_extension('cogs.general')
-    bot.load_extension('cogs.emotes')
-    bot.load_extension('cogs.admin')
+    for cog in default_cogs:
+        bot.load_extension('cogs.' + cog)
+        logger.info('Loaded extension: %s' % cog)
 
     @bot.event
     async def on_ready():
