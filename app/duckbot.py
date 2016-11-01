@@ -14,6 +14,7 @@ default_cogs = [
     'emotes',
     'general',
     'owner',
+    'twitch_emotes',
 ]
 
 
