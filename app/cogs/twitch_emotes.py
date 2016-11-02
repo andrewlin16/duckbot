@@ -1,10 +1,14 @@
 from io import BytesIO
+import logging
 import requests
 
 from discord.ext import commands
 from discord.ext.commands import Bot
 
 TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v2/global.json'
+
+
+logger = logging.getLogger(__name__)
 
 
 class TwitchEmotes:
@@ -19,6 +23,8 @@ class TwitchEmotes:
         emote_ids = {name: info['image_id'] for name, info in
                      emote_data['emotes'].items()}
         emote_cache = {}
+        logger.info('Got %d emotes from Twitchemotes.com API' % len(emote_ids))
+        logger.info('Using template: %s' % emote_template)
 
         @bot.listen('on_message')
         async def respond(message):
@@ -31,6 +37,7 @@ class TwitchEmotes:
                 if text not in emote_cache:
                     url = emote_template.replace('{image_id}',
                                                  str(emote_ids[text]))
+                    logger.info('Fetching emote %s from %s' % (text, url))
 
                     emote_img = requests.get(url).content
                     emote_cache[text] = emote_img
