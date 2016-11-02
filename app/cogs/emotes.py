@@ -8,6 +8,7 @@ DONGER = 'ヽ༼ຈل͜ຈ༽ﾉ'
 
 
 class Emotes:
+
     def __init__(self, bot):
         self.bot = bot
 

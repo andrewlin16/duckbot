@@ -10,6 +10,7 @@ RANGE_REGEX = re.compile('\d+-\d+')
 
 
 class General:
+
     def __init__(self, bot):
         self.bot = bot
 
