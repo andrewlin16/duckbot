@@ -42,9 +42,10 @@ class TwitchEmotes:
                     emote_img = requests.get(url).content
                     emote_cache[text] = emote_img
 
-                data = BytesIO(emote_cache[text])
                 filename = '%s.png' % text
-                await bot.send_file(message.channel, data, filename=filename)
+                with BytesIO(emote_cache[text]) as data:
+                    await bot.send_file(message.channel, data,
+                                        filename=filename)
 
 
 def setup(bot: Bot):
