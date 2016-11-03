@@ -20,7 +20,7 @@ default_cogs = [
 
 def setup_logging() -> logging.Logger:
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
         '%(asctime)s %(levelname)s [%(name)s]: %(message)s')
 
@@ -28,12 +28,12 @@ def setup_logging() -> logging.Logger:
     file_handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
                                        mode='a')
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.WARNING)
+    file_handler.setLevel(logging.INFO)
     logger.addHandler(file_handler)
 
     # Log INFO to stderr
     stderr_handler = logging.StreamHandler()
-    stderr_handler.setLevel(logging.INFO)
+    stderr_handler.setLevel(logging.DEBUG)
     stderr_handler.setFormatter(formatter)
     logger.addHandler(stderr_handler)
 
@@ -79,6 +79,9 @@ def main():
         print('logged in: %s (%s)' % (bot.user.name, bot.user.id))
         print('invite me: %s' % get_invite_url(bot))
         print('--------------------')
+        print('Connected to servers:')
+        for server in bot.servers:
+            print('    ' + str(server))
 
     bot.run(token)
 
