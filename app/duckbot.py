@@ -26,7 +26,7 @@ def setup_logging() -> logging.Logger:
 
     # Log WARNING to 'discord.log'
     file_handler = logging.FileHandler(filename='discord.log', encoding='utf-8',
-                                       mode='w')
+                                       mode='a')
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.WARNING)
     logger.addHandler(file_handler)
