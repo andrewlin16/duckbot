@@ -20,7 +20,7 @@ default_cogs = [
 
 def setup_logging() -> logging.Logger:
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s %(levelname)s [%(name)s]: %(message)s')
 
@@ -33,7 +33,7 @@ def setup_logging() -> logging.Logger:
 
     # Log INFO to stderr
     stderr_handler = logging.StreamHandler()
-    stderr_handler.setLevel(logging.DEBUG)
+    stderr_handler.setLevel(logging.INFO)
     stderr_handler.setFormatter(formatter)
     logger.addHandler(stderr_handler)
 
