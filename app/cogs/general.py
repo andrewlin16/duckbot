@@ -56,6 +56,7 @@ class General:
 
     @commands.command()
     async def invite(self):
+        """Sends an invite link for adding this bot to a server."""
         await self.bot.say(get_invite_url(self.bot))
 
 
