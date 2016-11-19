@@ -5,6 +5,7 @@ DISAPPROVAL = 'ಠ_ಠ'
 DONGER = 'ヽ༼ຈل͜ຈ༽ﾉ'
 GIFF = '༼ つ ◕_◕ ༽つ'
 LENNY = '( ͡° ͜ʖ ͡°)'
+QUACK = '.__o<  quack'
 
 
 class Emotes:
@@ -27,6 +28,10 @@ class Emotes:
     @commands.command(help=LENNY)
     async def lenny(self):
         await self.bot.say(LENNY)
+
+    @commands.command(help=QUACK)
+    async def quack(self):
+        await self.bot.say(QUACK)
 
 
 def setup(bot: Bot):
