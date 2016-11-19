@@ -67,8 +67,10 @@ def main():
     bot.client_id = bot_info['client_id']
     token = bot_info['token']
 
+    cog_list = bot_info['cogs'] if 'cogs' in bot_info else default_cogs
+
     # Register commands to bot
-    for cog in default_cogs:
+    for cog in cog_list:
         bot.load_extension('cogs.' + cog)
         logger.info('Loaded extension: %s' % cog)
 
