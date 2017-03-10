@@ -77,13 +77,13 @@ def main():
     @bot.event
     async def on_ready():
         logger.info('Ready')
-        print('--------------------')
-        print('logged in: %s (%s)' % (bot.user.name, bot.user.id))
-        print('invite me: %s' % get_invite_url(bot))
-        print('--------------------')
-        print('Connected to servers:')
+        logger.info('--------------------')
+        logger.info('logged in: %s (%s)' % (bot.user.name, bot.user.id))
+        logger.info('invite me: %s' % get_invite_url(bot))
+        logger.info('--------------------')
+        logger.info('Connected to servers:')
         for server in bot.servers:
-            print('    ' + str(server))
+            logger.info('    ' + str(server))
 
     bot.run(token)
 
