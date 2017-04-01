@@ -1,5 +1,6 @@
 from io import BytesIO
 import logging
+import re
 import requests
 
 from discord.ext import commands
@@ -52,20 +53,27 @@ class TwitchEmotes:
             if message.author == bot.user:
                 return
 
-            text = message.content
+            emote = self.find_emote(emotes, message.content)
 
-            if text in emotes:
+            if emote is not None:
+                text, url, extension = emote
                 if text not in emote_cache:
-                    url = emotes[text][0]
                     logger.info('Fetching emote %s from %s' % (text, url))
 
                     emote_img = requests.get(url).content
                     emote_cache[text] = emote_img
 
-                filename = '%s.%s' % (text, emotes[text][1])
+                filename = '%s.%s' % (text, extension)
                 with BytesIO(emote_cache[text]) as data:
                     await bot.send_file(message.channel, data,
                                         filename=filename)
+
+    def find_emote(self, emote_dict, text):
+        for emote in emote_dict:
+            if re.findall(r'\b%s$' % re.escape(emote), text):
+                url, extension = emote_dict[emote]
+                return (emote, url, extension)
+        return None
 
 
 def setup(bot: Bot):
