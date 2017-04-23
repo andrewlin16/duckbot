@@ -81,6 +81,7 @@ class Poll:
 
         message = await self.bot.say(current_poll)
         current_poll.original_message = message
+        await self.bot.pin_message(message)
 
     @poll.command(pass_context=True, aliases=['end'])
     async def stop(self, ctx: Context):
@@ -99,6 +100,7 @@ class Poll:
                 author.permissions_in(channel).manage_messages()):
             self.current_polls.pop(channel)
 
+            await self.bot.unpin_message(current_poll.original_message)
             await self.bot.say(current_poll)
 
     @commands.command(pass_context=True)
