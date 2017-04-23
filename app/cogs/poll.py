@@ -59,6 +59,15 @@ class PollState:
         return '**POLL RESULTS**: {}\n\n{}'.format(
             self.question, '\n'.join(choice_list))
 
+    def is_valid_choice(self, ans_num):
+        return 1 <= ans_num <= len(self.choices)
+
+    def has_already_voted(self, user):
+        return user in self.voters
+
+    def has_lock_expired(self):
+        return datetime.datetime.now() - self.start_time > DEFAULT_LOCK_TIME
+
 
 class Poll:
     """Commands to create and manage polls."""
@@ -117,8 +126,7 @@ class Poll:
         author = ctx.message.author
         if not (author == current_poll.owner or
                 author.permissions_in(channel).manage_messages or
-                (datetime.datetime.now() - current_poll.start_time >
-                 DEFAULT_LOCK_TIME)):
+                current_poll.has_lock_expired()):
             await self.bot.reply("you can't end this poll yet.")
             return
 
@@ -149,19 +157,19 @@ class Poll:
             return
 
         author = ctx.message.author
-        if author in current_poll.voters:
+        if current_poll.has_already_voted(author):
             await self.bot.reply('you have already voted in this poll.')
             return
 
-        if 1 <= ans_num <= len(current_poll.choices):
-            current_poll.choices[ans_num - 1]['count'] += 1
-            current_poll.voters.add(author)
-            await self.bot.edit_message(current_poll.original_message,
-                                        str(current_poll))
-            await self.bot.reply('your vote has been counted.')
-        else:
+        if not current_poll.is_valid_choice:
             await self.bot.reply('your vote must be between {}-{}.'.format(
                 1, len(current_poll.choices)))
+
+        current_poll.choices[ans_num - 1]['count'] += 1
+        current_poll.voters.add(author)
+        await self.bot.edit_message(current_poll.original_message,
+                                    str(current_poll))
+        await self.bot.reply('your vote has been counted.')
 
 
 def setup(bot: Bot):
