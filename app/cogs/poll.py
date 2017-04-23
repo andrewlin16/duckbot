@@ -18,7 +18,7 @@ class PollState:
         self.voters = set()
 
     def __str__(self):
-        return '{}\n{}'.format(
+        return '{}\n\n{}'.format(
             self.question,
             '\n'.join(['{}. {} - {}'.format(i + 1, ans['name'], ans['count'])
                        for i, ans in enumerate(self.answers)])
@@ -57,7 +57,7 @@ class Poll:
     async def stop(self, ctx: Context):
         channel = ctx.message.channel
         if channel not in self.current_polls:
-            await self.bot.say('No poll currently running in channel')
+            await self.bot.say('No poll currently running in channel.')
             return
 
         current_poll = self.current_polls[channel]
@@ -72,7 +72,7 @@ class Poll:
     async def vote(self, ctx: Context, ans_num: int):
         channel = ctx.message.channel
         if channel not in self.current_polls:
-            await self.bot.say('No poll currently running in channel')
+            await self.bot.say('No poll currently running in channel.')
             return
 
         current_poll: PollState = self.current_polls[channel]
@@ -86,7 +86,7 @@ class Poll:
             current_poll.voters.add(author)
             await self.bot.edit_message(current_poll.original_message,
                                         str(current_poll))
-            await self.bot.reply('vote has been counted')
+            await self.bot.reply('your vote has been counted.')
 
 
 def setup(bot: Bot):
