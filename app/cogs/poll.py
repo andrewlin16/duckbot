@@ -9,13 +9,29 @@ logger = logging.getLogger(__name__)
 
 
 class PollState:
+    """State of a single poll.
+
+     Attributes
+    -----------
+    owner : User
+        Owner of this poll.
+    question : str
+        The poll question.
+    answers : List[str]
+        List of answers.
+    voters : Set[User]
+        Voters who have already voted in this poll.
+    original_message: Message
+        The message sent by the bot when the poll was started showing the state
+        of the poll. It will be updated continuously as the poll as answered.
+    """
 
     def __init__(self, owner: User, question: str, answers):
-        self.original_message = None
         self.owner = owner
         self.question = question
         self.answers = [{'name': answer, 'count': 0} for answer in answers]
         self.voters = set()
+        self.original_message = None
 
     def __str__(self):
         return '{}\n\n{}'.format(
@@ -26,6 +42,7 @@ class PollState:
 
 
 class Poll:
+    """Commands to create and manage polls."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -39,6 +56,11 @@ class Poll:
 
     @poll.command(pass_context=True)
     async def start(self, ctx: Context, question=None, *answers):
+        """Start a poll
+
+        Syntax:
+            /poll "This is the question" "Answer 1" "Answer 2"
+        """
         if question is None:
             return  # TODO handle spurious /poll
 
@@ -55,6 +77,10 @@ class Poll:
 
     @poll.command(pass_context=True, aliases=['end'])
     async def stop(self, ctx: Context):
+        """Stop the current poll.
+
+        Must be poll owner or have the Manage Messages permission for channel.
+        """
         channel = ctx.message.channel
         if channel not in self.current_polls:
             await self.bot.say('No poll currently running in channel.')
@@ -70,6 +96,7 @@ class Poll:
 
     @commands.command(pass_context=True)
     async def vote(self, ctx: Context, ans_num: int):
+        """Vote for an answer. Must be an answer number."""
         channel = ctx.message.channel
         if channel not in self.current_polls:
             await self.bot.say('No poll currently running in channel.')
