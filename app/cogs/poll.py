@@ -17,42 +17,42 @@ class PollState:
         Owner of this poll.
     question : str
         The poll question.
-    answers : List[str]
-        List of answers.
+    choices : List[str]
+        List of choices.
     voters : Set[User]
         Voters who have already voted in this poll.
     original_message: Message
         The message sent by the bot when the poll was started showing the state
-        of the poll. It will be updated continuously as the poll as answered.
+        of the poll. It will be updated continuously as votes are submitted.
     """
 
-    def __init__(self, owner: User, question: str, answers):
+    def __init__(self, owner: User, question: str, choices):
         self.owner = owner
         self.question = question
-        self.answers = [{'name': answer, 'count': 0} for answer in answers]
+        self.choices = [{'name': choice, 'count': 0} for choice in choices]
         self.voters = set()
         self.original_message = None
 
     def __str__(self):
-        answer_list = [
+        choice_list = [
             '{}. {} - {} vote(s)'.format(i + 1, ans['name'], ans['count'])
-            for i, ans in enumerate(self.answers)
+            for i, ans in enumerate(self.choices)
         ]
 
         return '**POLL**: {}\n\n{}'.format(
-            self.question, '\n'.join(answer_list))
+            self.question, '\n'.join(choice_list))
 
     def end_result_str(self):
-        max_votes = max(self.answers, key=lambda ans: ans['count'])['count']
-        answer_list = [
+        max_votes = max(self.choices, key=lambda ans: ans['count'])['count']
+        choice_list = [
             '{0}{1}. {2} - {3} vote(s){0}'.format(
                 '**' if ans['count'] == max_votes else '',
                 i + 1, ans['name'], ans['count'])
-            for i, ans in enumerate(self.answers)
+            for i, ans in enumerate(self.choices)
         ]
 
         return '**POLL RESULTS**: {}\n\n{}'.format(
-            self.question, '\n'.join(answer_list))
+            self.question, '\n'.join(choice_list))
 
 
 class Poll:
@@ -64,24 +64,23 @@ class Poll:
 
     @commands.group(pass_context=True)
     async def poll(self, ctx: Context):
-        """Poll
-        """
+        """Group of commands for poll management"""
         if ctx.invoked_subcommand is None:
             await self.bot.say('Unknown poll command.')
 
     @poll.command(pass_context=True)
-    async def start(self, ctx: Context, question=None, *answers):
-        """Start a poll
+    async def start(self, ctx: Context, question=None, *choices):
+        """Start a poll.
 
         Syntax:
-            /poll "This is the question" "Answer 1" "Answer 2"
+            /poll "This is the question" "Choice 1" "Choice 2"
         """
         if question is None:
             await self.bot.reply('your poll needs a question.')
             return
 
-        if len(answers) < 1:
-            await self.bot.reply('your poll needs answers.')
+        if len(choices) < 1:
+            await self.bot.reply('your poll needs choices.')
             return
 
         channel = ctx.message.channel
@@ -89,7 +88,7 @@ class Poll:
             await self.bot.reply('there is already a poll running in here.')
             return
 
-        current_poll = PollState(ctx.message.author, question, answers)
+        current_poll = PollState(ctx.message.author, question, choices)
 
         self.current_polls[channel] = current_poll
 
@@ -119,7 +118,7 @@ class Poll:
 
     @commands.command(pass_context=True)
     async def vote(self, ctx: Context, ans_num=None):
-        """Vote for an answer. Must be an answer number."""
+        """Vote for a choice. Must be a choice number."""
         channel = ctx.message.channel
         if channel not in self.current_polls:
             await self.bot.reply('there is no poll currently running in here.')
@@ -129,14 +128,14 @@ class Poll:
 
         if ans_num is None:
             await self.bot.reply('your vote must be between {}-{}.'.format(
-                1, len(current_poll.answers)))
+                1, len(current_poll.choices)))
             return
 
         try:
             ans_num = int(ans_num)
         except ValueError:
             await self.bot.reply('your vote must be between {}-{}.'.format(
-                1, len(current_poll.answers)))
+                1, len(current_poll.choices)))
             return
 
         author = ctx.message.author
@@ -144,15 +143,15 @@ class Poll:
             await self.bot.reply('you have already voted in this poll.')
             return
 
-        if 1 <= ans_num <= len(current_poll.answers):
-            current_poll.answers[ans_num - 1]['count'] += 1
+        if 1 <= ans_num <= len(current_poll.choices):
+            current_poll.choices[ans_num - 1]['count'] += 1
             current_poll.voters.add(author)
             await self.bot.edit_message(current_poll.original_message,
                                         str(current_poll))
             await self.bot.reply('your vote has been counted.')
         else:
             await self.bot.reply('your vote must be between {}-{}.'.format(
-                1, len(current_poll.answers)))
+                1, len(current_poll.choices)))
 
 
 def setup(bot: Bot):
