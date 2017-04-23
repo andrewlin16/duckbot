@@ -66,6 +66,10 @@ class Poll:
             await self.bot.reply('your poll needs a question.')
             return
 
+        if len(answers) < 1:
+            await self.bot.reply('your poll needs answers.')
+            return
+
         channel = ctx.message.channel
         if channel in self.current_polls:
             await self.bot.reply('there is already a poll running in here.')
