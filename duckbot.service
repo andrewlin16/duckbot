@@ -1,0 +1,13 @@
+[Unit]
+Description=duckbot
+After=network.target
+
+[Service]
+Type=simple
+User=duck
+WorkingDirectory=/home/duck/duckbot
+ExecStart=/usr/bin/python3 /home/duck/duckbot/app/duckbot.py -b prod
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
