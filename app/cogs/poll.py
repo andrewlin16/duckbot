@@ -34,11 +34,25 @@ class PollState:
         self.original_message = None
 
     def __str__(self):
-        return '{}\n\n{}'.format(
-            self.question,
-            '\n'.join(['{}. {} - {}'.format(i + 1, ans['name'], ans['count'])
-                       for i, ans in enumerate(self.answers)])
-        )
+        answer_list = [
+            '{}. {} - {} vote(s)'.format(i + 1, ans['name'], ans['count'])
+            for i, ans in enumerate(self.answers)
+        ]
+
+        return '**POLL**: {}\n\n{}'.format(
+            self.question, '\n'.join(answer_list))
+
+    def end_result_str(self):
+        max_votes = max(self.answers, key=lambda ans: ans['count'])['count']
+        answer_list = [
+            '{0}{1}. {2} - {3} vote(s){0}'.format(
+                '**' if ans['count'] == max_votes else '',
+                i + 1, ans['name'], ans['count'])
+            for i, ans in enumerate(self.answers)
+        ]
+
+        return '**POLL RESULTS**: {}\n\n{}'.format(
+            self.question, '\n'.join(answer_list))
 
 
 class Poll:
@@ -101,7 +115,7 @@ class Poll:
             self.current_polls.pop(channel)
 
             await self.bot.unpin_message(current_poll.original_message)
-            await self.bot.say(current_poll)
+            await self.bot.say(current_poll.end_result_str())
 
     @commands.command(pass_context=True)
     async def vote(self, ctx: Context, ans_num=None):
