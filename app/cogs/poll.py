@@ -125,7 +125,7 @@ class Poll:
             await self.bot.reply('there is no poll currently running in here.')
             return
 
-        current_poll: PollState = self.current_polls[channel]
+        current_poll = self.current_polls[channel]
 
         if ans_num is None:
             await self.bot.reply('your vote must be between {}-{}.'.format(
