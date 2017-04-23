@@ -102,7 +102,7 @@ class Poll:
             await self.bot.say(current_poll)
 
     @commands.command(pass_context=True)
-    async def vote(self, ctx: Context, ans_num: int):
+    async def vote(self, ctx: Context, ans_num=None):
         """Vote for an answer. Must be an answer number."""
         channel = ctx.message.channel
         if channel not in self.current_polls:
@@ -110,8 +110,20 @@ class Poll:
             return
 
         current_poll: PollState = self.current_polls[channel]
-        author = ctx.message.author
 
+        if ans_num is None:
+            await self.bot.reply('your vote must be between {}-{}.'.format(
+                1, len(current_poll.answers)))
+            return
+
+        try:
+            ans_num = int(ans_num)
+        except ValueError:
+            await self.bot.reply('your vote must be between {}-{}.'.format(
+                1, len(current_poll.answers)))
+            return
+
+        author = ctx.message.author
         if author in current_poll.voters:
             await self.bot.reply('you have already voted in this poll.')
             return
