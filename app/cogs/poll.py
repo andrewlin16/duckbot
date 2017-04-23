@@ -53,7 +53,7 @@ class Poll:
         message = await self.bot.say(current_poll)
         current_poll.original_message = message
 
-    @poll.command(pass_context=True)
+    @poll.command(pass_context=True, aliases=['end'])
     async def stop(self, ctx: Context):
         channel = ctx.message.channel
         if channel not in self.current_polls:
