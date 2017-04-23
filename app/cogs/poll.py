@@ -52,7 +52,8 @@ class Poll:
     async def poll(self, ctx: Context):
         """Poll
         """
-        logger.info('/poll received')
+        if ctx.invoked_subcommand is None:
+            await self.bot.say('Unknown poll command.')
 
     @poll.command(pass_context=True)
     async def start(self, ctx: Context, question=None, *answers):
@@ -62,11 +63,13 @@ class Poll:
             /poll "This is the question" "Answer 1" "Answer 2"
         """
         if question is None:
-            return  # TODO handle spurious /poll
+            await self.bot.reply('your poll needs a question.')
+            return
 
         channel = ctx.message.channel
         if channel in self.current_polls:
-            return  # TODO handle chan already has poll
+            await self.bot.reply('there is already a poll running in here.')
+            return
 
         current_poll = PollState(ctx.message.author, question, answers)
 
@@ -83,7 +86,7 @@ class Poll:
         """
         channel = ctx.message.channel
         if channel not in self.current_polls:
-            await self.bot.say('No poll currently running in channel.')
+            await self.bot.reply('there is no poll currently running in here.')
             return
 
         current_poll = self.current_polls[channel]
@@ -99,13 +102,14 @@ class Poll:
         """Vote for an answer. Must be an answer number."""
         channel = ctx.message.channel
         if channel not in self.current_polls:
-            await self.bot.say('No poll currently running in channel.')
+            await self.bot.reply('there is no poll currently running in here.')
             return
 
         current_poll: PollState = self.current_polls[channel]
         author = ctx.message.author
 
         if author in current_poll.voters:
+            await self.bot.reply('you have already voted in this poll.')
             return
 
         if 1 <= ans_num <= len(current_poll.answers):
@@ -114,6 +118,9 @@ class Poll:
             await self.bot.edit_message(current_poll.original_message,
                                         str(current_poll))
             await self.bot.reply('your vote has been counted.')
+        else:
+            await self.bot.reply('your vote must be between {}-{}.'.format(
+                1, len(current_poll.answers)))
 
 
 def setup(bot: Bot):
