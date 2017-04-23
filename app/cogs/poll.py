@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 from discord import User
 from discord.ext import commands
@@ -6,6 +7,9 @@ from discord.ext.commands import Bot
 from discord.ext.commands import Context
 
 logger = logging.getLogger(__name__)
+
+# Time where poll can only be closed by owner or channel managers
+DEFAULT_LOCK_TIME = datetime.timedelta(hours=6)
 
 
 class PollState:
@@ -32,6 +36,7 @@ class PollState:
         self.choices = [{'name': choice, 'count': 0} for choice in choices]
         self.voters = set()
         self.original_message = None
+        self.start_time = datetime.datetime.now()
 
     def __str__(self):
         choice_list = [
@@ -73,7 +78,7 @@ class Poll:
         """Start a poll.
 
         Syntax:
-            /poll "This is the question" "Choice 1" "Choice 2"
+            /poll start "This is the question" "Choice 1" "Choice 2"
         """
         if question is None:
             await self.bot.reply('your poll needs a question.')
@@ -100,7 +105,8 @@ class Poll:
     async def stop(self, ctx: Context):
         """Stop the current poll.
 
-        Must be poll owner or have the Manage Messages permission for channel.
+        When the poll is locked, only the poll owner or users who have the 
+        Manage Messages permission for the channel can stop the poll.
         """
         channel = ctx.message.channel
         if channel not in self.current_polls:
@@ -109,12 +115,16 @@ class Poll:
 
         current_poll = self.current_polls[channel]
         author = ctx.message.author
-        if (author is current_poll.owner or
-                author.permissions_in(channel).manage_messages()):
-            self.current_polls.pop(channel)
+        if not (author == current_poll.owner or
+                author.permissions_in(channel).manage_messages or
+                (datetime.datetime.now() - current_poll.start_time >
+                 DEFAULT_LOCK_TIME)):
+            await self.bot.reply("you can't end this poll yet.")
+            return
 
-            await self.bot.unpin_message(current_poll.original_message)
-            await self.bot.say(current_poll.end_result_str())
+        self.current_polls.pop(channel)
+        await self.bot.unpin_message(current_poll.original_message)
+        await self.bot.say(current_poll.end_result_str())
 
     @commands.command(pass_context=True)
     async def vote(self, ctx: Context, ans_num=None):
