@@ -59,8 +59,12 @@ class PollState:
         return '**POLL RESULTS**: {}\n\n{}'.format(
             self.question, '\n'.join(choice_list))
 
-    def is_valid_choice(self, ans_num):
-        return 1 <= ans_num <= len(self.choices)
+    def get_validated_choice(self, ans_num):
+        try:
+            ans_num = int(ans_num)
+            return ans_num if 1 <= ans_num <= len(self.choices) else None
+        except (TypeError, ValueError):
+            return None
 
     def has_already_voted(self, user):
         return user in self.voters
@@ -144,14 +148,8 @@ class Poll:
 
         current_poll = self.current_polls[channel]
 
+        ans_num = current_poll.get_validated_choice(ans_num)
         if ans_num is None:
-            await self.bot.reply('your vote must be between {}-{}.'.format(
-                1, len(current_poll.choices)))
-            return
-
-        try:
-            ans_num = int(ans_num)
-        except ValueError:
             await self.bot.reply('your vote must be between {}-{}.'.format(
                 1, len(current_poll.choices)))
             return
@@ -160,10 +158,6 @@ class Poll:
         if current_poll.has_already_voted(author):
             await self.bot.reply('you have already voted in this poll.')
             return
-
-        if not current_poll.is_valid_choice:
-            await self.bot.reply('your vote must be between {}-{}.'.format(
-                1, len(current_poll.choices)))
 
         current_poll.choices[ans_num - 1]['count'] += 1
         current_poll.voters.add(author)
