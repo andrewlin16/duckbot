@@ -44,8 +44,7 @@ class PollState:
             for i, ans in enumerate(self.choices)
         ]
 
-        return '**POLL**: {}\n\n{}'.format(
-            self.question, '\n'.join(choice_list))
+        return '{}\n\n{}'.format(self.question, '\n'.join(choice_list))
 
     def end_result_str(self):
         max_votes = max(self.choices, key=lambda ans: ans['count'])['count']
@@ -83,8 +82,15 @@ class Poll:
     @commands.group(pass_context=True)
     async def poll(self, ctx: Context):
         """Group of commands for poll management"""
-        if ctx.invoked_subcommand is None:
-            await self.bot.say('Unknown poll command.')
+        if ctx.invoked_subcommand is not None:
+            return
+
+        channel = ctx.message.channel
+        if channel in self.current_polls:
+            await self.bot.say('Current poll: {}'.format(
+                self.current_polls[channel]))
+        else:
+            await self.bot.say('There is no poll currently running.')
 
     @poll.command(pass_context=True)
     async def start(self, ctx: Context, question=None, *choices):
@@ -110,7 +116,7 @@ class Poll:
 
         self.current_polls[channel] = current_poll
 
-        message = await self.bot.say(current_poll)
+        message = await self.bot.say('**POLL**: {}'.format(current_poll))
         current_poll.original_message = message
         await self.bot.pin_message(message)
 
