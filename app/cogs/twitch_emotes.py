@@ -6,8 +6,10 @@ import requests
 from discord.ext import commands
 from discord.ext.commands import Bot
 
-TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v2/global.json'
+TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v3/global.json'
 BTTV_EMOTES_API = 'https://api.betterttv.net/emotes'
+
+TWITCH_EMOTE_TEMPLATE = 'https://static-cdn.jtvnw.net/emoticons/v1/{image_id}/1.0'
 
 
 logger = logging.getLogger(__name__)
@@ -21,17 +23,15 @@ class TwitchEmotes:
 
         r = requests.get(TWITCH_EMOTES_API)
         ttv_emote_data = r.json()
-
-        ttv_emote_template = ttv_emote_data['template']['small']
         ttv_emotes = {
-            name: (ttv_emote_template.replace(
-                '{image_id}', str(info['image_id'])), 'png')
-            for name, info in ttv_emote_data['emotes'].items()
+            name: (TWITCH_EMOTE_TEMPLATE.replace(
+                '{image_id}', str(info['id'])), 'png')
+            for name, info in ttv_emote_data.items()
         }
 
         logger.info('Got %d Twitch emotes from Twitchemotes.com API' %
                     len(ttv_emotes))
-        logger.info('Using template: %s' % ttv_emote_template)
+        logger.info('Using template: %s' % TWITCH_EMOTE_TEMPLATE)
 
         r = requests.get(BTTV_EMOTES_API)
         bttv_emote_data = r.json()
