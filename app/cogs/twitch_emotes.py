@@ -8,9 +8,10 @@ from discord.ext.commands import Bot
 
 TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v3/global.json'
 BTTV_EMOTES_API = 'https://api.betterttv.net/emotes'
+FFZ_EMOTES_API = 'https://api.frankerfacez.com/v1/emoticons?per_page=%d&sort=count-desc'
 
 TWITCH_EMOTE_TEMPLATE = 'https://static-cdn.jtvnw.net/emoticons/v1/{image_id}/1.0'
-
+NUM_FFZ_EMOTES = 100
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ class TwitchEmotes:
         self.bot = bot
         emote_cache = {}
 
+        # Resolve vanilla Twitch emotes via Twitchemotes.com
         r = requests.get(TWITCH_EMOTES_API)
         ttv_emote_data = r.json()
         ttv_emotes = {
@@ -33,6 +35,7 @@ class TwitchEmotes:
                     len(ttv_emotes))
         logger.info('Using template: %s' % TWITCH_EMOTE_TEMPLATE)
 
+        # Resolve BetterTTV emotes
         r = requests.get(BTTV_EMOTES_API)
         bttv_emote_data = r.json()
 
@@ -44,9 +47,23 @@ class TwitchEmotes:
         logger.info('Got %d BTTV emotes from BetterTTV emotes API' %
                     len(bttv_emotes))
 
-        emotes = {**ttv_emotes, **bttv_emotes}
+        # Resolve FrankerFaceZ emotes
+        r = requests.get(FFZ_EMOTES_API % NUM_FFZ_EMOTES)
+        ffz_emote_data = r.json()
 
-        logger.info('Total of %d Twitch + BTTV emotes' % len(emotes))
+        ffz_emotes = {}
+        # Note: iterating manually in case of multiple emotes defined for 1 name
+        for data in ffz_emote_data['emoticons']:
+            name = data['name']
+            if name not in ffz_emotes:
+                ffz_emotes[name] = ('https:' + data['urls']['1'], 'png')
+
+        logger.info('Got %d FFZ emotes from FrankerFaceZ API' % len(ffz_emotes))
+
+        # Merge all emotes (do note that order is important for priority)
+        # Priority: TTV > BTTV > FFZ
+        emotes = {**ffz_emotes, **bttv_emotes, **ttv_emotes}
+        logger.info('Total of %d emotes' % len(emotes))
 
         @bot.listen('on_message')
         async def respond(message):
