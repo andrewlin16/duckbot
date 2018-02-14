@@ -6,12 +6,12 @@ import requests
 from discord.ext import commands
 from discord.ext.commands import Bot
 
-TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v3/global.json'
-BTTV_EMOTES_API = 'https://api.betterttv.net/emotes'
-FFZ_EMOTES_API = 'https://api.frankerfacez.com/v1/emoticons?per_page=%d&sort=count-desc'
-
 TWITCH_EMOTE_TEMPLATE = 'https://static-cdn.jtvnw.net/emoticons/v1/{image_id}/1.0'
 NUM_FFZ_EMOTES = 100
+
+TWITCH_EMOTES_API = 'https://twitchemotes.com/api_cache/v3/global.json'
+BTTV_EMOTES_API = 'https://api.betterttv.net/emotes'
+FFZ_EMOTES_API = 'https://api.frankerfacez.com/v1/emoticons?per_page=%d&sort=count-desc' % NUM_FFZ_EMOTES
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +48,7 @@ class TwitchEmotes:
                     len(bttv_emotes))
 
         # Resolve FrankerFaceZ emotes
-        r = requests.get(FFZ_EMOTES_API % NUM_FFZ_EMOTES)
+        r = requests.get(FFZ_EMOTES_API)
         ffz_emote_data = r.json()
 
         ffz_emotes = {}
