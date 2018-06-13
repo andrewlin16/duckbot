@@ -8,6 +8,8 @@ User=duck
 WorkingDirectory=/home/duck/duckbot
 ExecStart=/usr/bin/python3 /home/duck/duckbot/app/duckbot.py -b prod
 Restart=always
+RestartSec=3
+StartLimitIntervalSec=0
 
 [Install]
 WantedBy=multi-user.target
