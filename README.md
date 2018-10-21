@@ -12,7 +12,7 @@ To set up:
 2.  `source env/bin/activate` to use virtual env.
 3.  `pip install -U pip setuptools wheel` to upgrade pip.
 4.  `pip install -r requirements.txt` to install deps.
-5.  Create a `app/config.py` file with the same format as `config.example.py`
+5.  Create a `app/config.py` file with the same format as `config.example.py`.
 
     You can find or create your list of applications
     [here](https://discordapp.com/developers/applications/me).
