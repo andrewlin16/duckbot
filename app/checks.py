@@ -6,7 +6,7 @@ import config
 def is_owner():
     def predicate(author_id):
         try:
-            return config.owner_id == author_id
+            return author_id in config.owner_ids
         except NameError:
             return False
 
